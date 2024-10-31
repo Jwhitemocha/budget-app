@@ -1,7 +1,11 @@
-from django.urls import path
-from .views import car_loan_view, savings_view
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import BudgetViewSet, ExpenseViewSet
+
+router = DefaultRouter()
+router.register(r'budgets', BudgetViewSet)
+router.register(r'expenses', ExpenseViewSet)
 
 urlpatterns = [
-    path('car_loan/', car_loan_view, name='car_loan'),
-    path('savings/', savings_view, name='savings'),
+    path('', include(router.urls)),
 ]
