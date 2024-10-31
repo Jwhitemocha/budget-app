@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useState } from "react";
 import axios from "axios";
+import { TextField, Button, Container, Typography, Card, CardContent } from "@mui/material";
 
 function App() {
   const [principal, setPrincipal] = useState("");
@@ -12,7 +13,6 @@ function App() {
   const [expenses, setExpenses] = useState("");
   const [savings, setSavings] = useState(null);
 
-  // Function to send car loan data to Django and get the monthly payment
   const calculateCarLoan = async () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/car_loan/", {
@@ -20,71 +20,90 @@ function App() {
         annual_rate: parseFloat(annualRate),
         years: parseInt(years),
       });
-      setPayment(response.data.payment); // Update payment state with response
+      setPayment(response.data.payment);
     } catch (error) {
       console.error("Error calculating car loan:", error);
     }
   };
 
-  // Function to send savings data to Django and get remaining savings
   const calculateSavings = async () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/savings/", {
         income: parseFloat(income),
         expenses: parseFloat(expenses),
       });
-      setSavings(response.data.remaining_savings); // Update savings state with response
+      setSavings(response.data.remaining_savings);
     } catch (error) {
       console.error("Error calculating savings:", error);
     }
   };
 
   return (
-    <div className="App">
-      <h1>Budgeting App</h1>
+    <Container maxWidth="sm" style={{ padding: "2rem" }}>
+      <Typography variant="h3" align="center" gutterBottom>
+        Budgeting App
+      </Typography>
 
-      <div>
-        <h2>Car Loan Calculator</h2>
-        <input
-          type="number"
-          placeholder="Principal"
-          value={principal}
-          onChange={(e) => setPrincipal(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Annual Rate"
-          value={annualRate}
-          onChange={(e) => setAnnualRate(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Years"
-          value={years}
-          onChange={(e) => setYears(e.target.value)}
-        />
-        <button onClick={calculateCarLoan}>Calculate Car Loan Payment</button>
-        {payment !== null && <p>Monthly Payment: ${payment}</p>}
-      </div>
+      <Card style={{ marginBottom: "1.5rem" }}>
+        <CardContent>
+          <Typography variant="h5" gutterBottom>Car Loan Calculator</Typography>
+          <TextField
+            label="Principal"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={principal}
+            onChange={(e) => setPrincipal(e.target.value)}
+          />
+          <TextField
+            label="Annual Rate (%)"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={annualRate}
+            onChange={(e) => setAnnualRate(e.target.value)}
+          />
+          <TextField
+            label="Years"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={years}
+            onChange={(e) => setYears(e.target.value)}
+          />
+          <Button variant="contained" color="primary" fullWidth onClick={calculateCarLoan} style={{ marginTop: "1rem" }}>
+            Calculate Car Loan Payment
+          </Button>
+          {payment !== null && <Typography style={{ marginTop: "1rem" }}>Monthly Payment: ${payment}</Typography>}
+        </CardContent>
+      </Card>
 
-      <div>
-        <h2>Savings Calculator</h2>
-        <input
-          type="number"
-          placeholder="Monthly Income"
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Monthly Expenses"
-          value={expenses}
-          onChange={(e) => setExpenses(e.target.value)}
-        />
-        <button onClick={calculateSavings}>Calculate Remaining Savings</button>
-        {savings !== null && <p>Remaining Savings: ${savings}</p>}
-      </div>
-    </div>
+      <Card>
+        <CardContent>
+          <Typography variant="h5" gutterBottom>Savings Calculator</Typography>
+          <TextField
+            label="Monthly Income"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+          />
+          <TextField
+            label="Monthly Expenses"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={expenses}
+            onChange={(e) => setExpenses(e.target.value)}
+          />
+          <Button variant="contained" color="primary" fullWidth onClick={calculateSavings} style={{ marginTop: "1rem" }}>
+            Calculate Remaining Savings
+          </Button>
+          {savings !== null && <Typography style={{ marginTop: "1rem" }}>Remaining Savings: ${savings}</Typography>}
+        </CardContent>
+      </Card>
+    </Container>
   );
 }
 
