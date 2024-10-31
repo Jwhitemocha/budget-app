@@ -1,5 +1,17 @@
 from rest_framework import serializers
-from .models import Budget, Expense
+from .models import Budget, Expense, Debt, PayoffPlan
+
+class DebtSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Debt
+        fields = ['id', 'name', 'interest_rate', 'min_payment', 'start_balance', 'current_balance']
+
+class PayoffPlanSerializer(serializers.ModelSerializer):
+    debts = DebtSerializer(many=True)
+
+    class Meta:
+        model = PayoffPlan
+        fields = ['id', 'created_at', 'total_extra_payment', 'total_months', 'plan_summary', 'debts']
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +31,6 @@ class BudgetSerializer(serializers.ModelSerializer):
         for expense_data in expenses_data:
             Expense.objects.create(budget=budget, **expense_data)
         return budget
+
+
+
